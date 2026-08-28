@@ -8,14 +8,16 @@ import (
 )
 
 // Inserta una lista de numeros dentro el arbol
-func (t *tree) fillTree(elements []int) {
+func (t *tree) fillTree(lenght int) {
+	elements := randomNumbersArray(lenght)
 	for i := range len(elements) {
 		t.Add(elements[i])
 	}
 }
 
 // Inserta una lista de numeros dentro el arbol simultaneamente ocn varios hilos
-func (t *tree) fillTreeGo(workers int, elements []int) {
+func (t *tree) fillTreeGo(workers int, lenght int) {
+	elements := randomNumbersArray(lenght)
 	cycles := len(elements) / workers
 	var wg sync.WaitGroup
 	for range workers {
@@ -102,18 +104,16 @@ func averageTime(threads int, test func()) {
 }
 
 func (t *tree) addTest(lenght int, workers int) {
-	listNumbers := randomNumbersArray(lenght)
-
 	testTime := time.Now()
-	t.fillTreeGo(workers, listNumbers)
-	fmt.Println(len(listNumbers), "elementos insertados en el arbol en", time.Since(testTime))
+	t.fillTreeGo(workers, lenght)
+	fmt.Println(lenght, "elementos insertados en el arbol en", time.Since(testTime))
 	fmt.Println()
 
 	t.root = nil
 
 	testTime2 := time.Now()
-	t.fillTree(listNumbers)
-	fmt.Println(len(listNumbers), "elementos insertados en el arbol en", time.Since(testTime2))
+	t.fillTree(lenght)
+	fmt.Println(lenght, "elementos insertados en el arbol en", time.Since(testTime2))
 
 	fmt.Println("Arbol y array creados, empezando el test...")
 }
@@ -121,5 +121,6 @@ func (t *tree) addTest(lenght int, workers int) {
 func main() {
 	t := new(tree)
 
+	t.fillTreeGo(4, 500)
 	menuTesting(t)
 }
