@@ -40,7 +40,7 @@ func randomNumbersArray(lenght int) []int {
 }
 
 // Test sin hilos
-func (t *tree) noGoTestSearch(searchArray []int) time.Duration {
+func (t *tree) searchNum(searchArray []int) {
 	start := time.Now()
 
 	for i := range searchArray {
@@ -50,12 +50,11 @@ func (t *tree) noGoTestSearch(searchArray []int) time.Duration {
 	return time.Since(start)
 }
 
-// Test con n hilos
-func (t *tree) goTestSearch(workers int, searchArray []int) time.Duration {
+// PRE: El arbol tiene que tener elementos
+func (t *tree) searchNumGo(workers int, searchArray []int) {
 	searchBlockLenght := len(searchArray) / workers
 	var wg sync.WaitGroup
 
-	start := time.Now()
 	for i := range workers {
 		wg.Add(1)
 		indexStart := i * searchBlockLenght
@@ -75,17 +74,16 @@ func (t *tree) goTestSearch(workers int, searchArray []int) time.Duration {
 		}(searchBlock)
 	}
 	wg.Wait()
-	return time.Since(start)
 }
 
-// Ejecuta n test y calcula su promedio
-func averageTime(runs int, threads int, test func() time.Duration) {
+// Ejecuta n test y calcula su promedio (PARA TEMINAR)
+func averageTime(threads int, test func()) {
 	var testTime time.Duration
 	var totalTime time.Duration
 	var minTime time.Duration
 	var maxTime time.Duration
 
-	for i := range runs {
+	for i := range 15 {
 		testTime = test()
 		if i == 0 {
 			minTime = testTime
@@ -103,11 +101,11 @@ func averageTime(runs int, threads int, test func() time.Duration) {
 	fmt.Println("Promedio con", threads, "hilos:", times)
 }
 
-func addTest(t *tree) {
-	listNumbers := randomNumbersArray(5000000)
+func (t *tree) addTest(lenght int, workers int) {
+	listNumbers := randomNumbersArray(lenght)
 
 	testTime := time.Now()
-	t.fillTreeGo(4, listNumbers)
+	t.fillTreeGo(workers, listNumbers)
 	fmt.Println(len(listNumbers), "elementos insertados en el arbol en", time.Since(testTime))
 	fmt.Println()
 
@@ -124,11 +122,4 @@ func main() {
 	t := new(tree)
 
 	menuTesting(t)
-
-	//averageTime(10, 0, func() time.Duration { return t.noGoTestSearch(searchArray) })
-	//averageTime(10, 1, func() time.Duration { return t.goTestSearch(1, searchArray) })
-	//averageTime(10, 4, func() time.Duration { return t.goTestSearch(4, searchArray) })
-	//averageTime(10, 8, func() time.Duration { return t.goTestSearch(8, searchArray) })
-	//averageTime(10, 16, func() time.Duration { return t.goTestSearch(16, searchArray) })
-
 }
