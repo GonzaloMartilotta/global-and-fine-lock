@@ -29,16 +29,23 @@ func fillTree(t BST, lenght int) {
 // Inserta una lista de numeros dentro el arbol simultaneamente ocn varios hilos
 func fillTreeGo(t BST, workers int, lenght int) {
 	elements := avgtime.RandomNumbersArray(lenght)
-	cycles := len(elements) / workers
+	blocks := len(elements) / workers
 	var wg sync.WaitGroup
-	for range workers {
+	for i := range workers {
 		wg.Add(1)
-		go func(cycles int) {
+		indexStart := i * blocks
+		indexEnd := indexStart + blocks
+		if i == workers-1 {
+			indexEnd = len(elements)
+		}
+		block := elements[indexStart:indexEnd]
+
+		go func(block []int) {
 			defer wg.Done()
-			for i := range cycles {
-				t.Add(elements[i])
+			for j := range block {
+				t.Add(block[j])
 			}
-		}(cycles)
+		}(block)
 	}
 	wg.Wait()
 }
