@@ -43,13 +43,9 @@ func randomNumbersArray(lenght int) []int {
 
 // Test sin hilos
 func (t *tree) searchNum(searchArray []int) {
-	start := time.Now()
-
 	for i := range searchArray {
 		t.Search(searchArray[i])
 	}
-
-	return time.Since(start)
 }
 
 // PRE: El arbol tiene que tener elementos
@@ -79,13 +75,14 @@ func (t *tree) searchNumGo(workers int, searchArray []int) {
 }
 
 // Ejecuta n test y calcula su promedio (PARA TEMINAR)
-func averageTime(threads int, test func()) {
+func averageTime(threads int, test func() time.Duration) {
 	var testTime time.Duration
 	var totalTime time.Duration
 	var minTime time.Duration
 	var maxTime time.Duration
+	runs := 15
 
-	for i := range 15 {
+	for i := range runs {
 		testTime = test()
 		if i == 0 {
 			minTime = testTime
@@ -120,7 +117,6 @@ func (t *tree) addTest(lenght int, workers int) {
 
 func main() {
 	t := new(tree)
-
 	t.fillTreeGo(4, 500)
 	menuTesting(t)
 }
