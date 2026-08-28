@@ -64,7 +64,35 @@ func (t *tree) Add(value int) {
 	add(value, t.root)
 }
 
-func search(value int)
+func search(value int, root *node) *node {
+	if root.Value > value {
+		if root.Left != nil {
+			root.Left.mu.Lock()
+			root.mu.Unlock()
+			return search(value, root.Left)
+		}
+		root.mu.Unlock()
+		return nil
+	} else if root.Value < value {
+		if root.Right != nil {
+			root.Right.mu.Lock()
+			root.mu.Unlock()
+			return search(value, root.Right)
+		}
+		root.mu.Unlock()
+		return nil
+	} else {
+		root.mu.Unlock()
+		return root
+	}
+}
+func (t *tree) Search(value int) *node {
+	if t.root == nil {
+		return nil
+	}
+	t.root.mu.Lock()
+	return search(value, t.root)
+}
 
 func navegate(root *node) *node {
 	if root == nil {
@@ -94,7 +122,6 @@ func menuTesting(t *tree) {
 	for stay {
 		fmt.Println("---Menu---")
 		fmt.Println("1-Add")
-		fmt.Println("2-Delete")
 		fmt.Println("3-Search")
 		fmt.Println("4-Navegate")
 		fmt.Println("5-Quit")
@@ -105,6 +132,14 @@ func menuTesting(t *tree) {
 			fmt.Scan(&value)
 			t.Add(value)
 			fmt.Println("Valor agregado")
+		case 3:
+			fmt.Scan(&value)
+			node := t.Search(value)
+			if node != nil {
+				fmt.Println("Node found:", node)
+			} else {
+				fmt.Println("Node not found")
+			}
 		case 4:
 			navegate(t.root)
 		case 5:
