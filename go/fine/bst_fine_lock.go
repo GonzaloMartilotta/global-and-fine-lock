@@ -1,29 +1,29 @@
 // Arbol con fine lock, la idea es que se puedan ejecutar varias operaciones en el arbol al mismo timepo
 // la idea es mejorar el tiempo y testear la diferencia entre la cantidad de hilos proporcionados
 
-package main
+package fine
 
 import (
 	"fmt"
 	"sync"
 )
 
-type tree struct {
+type Tree struct {
 	mu   sync.Mutex
-	root *node
+	root *Node
 }
 
-type node struct {
+type Node struct {
 	mu    sync.Mutex
 	Value int
-	Left  *node
-	Right *node
+	Left  *Node
+	Right *Node
 }
 
-func add(value int, root *node) {
+func add(value int, root *Node) {
 	if value < root.Value {
 		if root.Left == nil {
-			new := new(node)
+			new := new(Node)
 			new.Value = value
 			root.Left = new
 			root.mu.Unlock()
@@ -34,7 +34,7 @@ func add(value int, root *node) {
 		}
 	} else if value > root.Value {
 		if root.Right == nil {
-			new := new(node)
+			new := new(Node)
 			new.Value = value
 			root.Right = new
 			root.mu.Unlock()
@@ -47,10 +47,10 @@ func add(value int, root *node) {
 		root.mu.Unlock()
 	}
 }
-func (t *tree) Add(value int) {
+func (t *Tree) Add(value int) {
 	t.mu.Lock()
 	if t.root == nil {
-		newNode := new(node)
+		newNode := new(Node)
 		newNode.mu.Lock()
 		newNode.Value = value
 		t.root = newNode
@@ -64,7 +64,7 @@ func (t *tree) Add(value int) {
 	add(value, t.root)
 }
 
-func search(value int, root *node) *node {
+func search(value int, root *Node) bool {
 	if root.Value > value {
 		if root.Left != nil {
 			root.Left.mu.Lock()
@@ -72,7 +72,7 @@ func search(value int, root *node) *node {
 			return search(value, root.Left)
 		}
 		root.mu.Unlock()
-		return nil
+		return false
 	} else if root.Value < value {
 		if root.Right != nil {
 			root.Right.mu.Lock()
@@ -80,21 +80,31 @@ func search(value int, root *node) *node {
 			return search(value, root.Right)
 		}
 		root.mu.Unlock()
-		return nil
+		return false
 	} else {
 		root.mu.Unlock()
-		return root
+		return true
 	}
 }
-func (t *tree) Search(value int) *node {
+func (t *Tree) Search(value int) bool {
 	if t.root == nil {
-		return nil
+		return false
 	}
 	t.root.mu.Lock()
 	return search(value, t.root)
 }
 
-func navegate(root *node) *node {
+func (t *Tree) Delete(value int) {
+	fmt.Println("No implementado")
+}
+
+func (t *Tree) Clear() {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.root = nil
+}
+
+func navegate(root *Node) *Node {
 	if root == nil {
 		return nil
 	}
@@ -112,38 +122,4 @@ func navegate(root *node) *node {
 		return navegate(root.Right)
 	}
 	return root
-}
-
-func menuTesting(t *tree) {
-	var option int
-	var value int
-	var stay bool = true
-
-	for stay {
-		fmt.Println("---Menu---")
-		fmt.Println("1-Add")
-		fmt.Println("3-Search")
-		fmt.Println("4-Navegate")
-		fmt.Println("5-Quit")
-		fmt.Print("Option: ")
-		fmt.Scan(&option)
-		switch option {
-		case 1:
-			fmt.Scan(&value)
-			t.Add(value)
-			fmt.Println("Valor agregado")
-		case 3:
-			fmt.Scan(&value)
-			node := t.Search(value)
-			if node != nil {
-				fmt.Println("Node found:", node)
-			} else {
-				fmt.Println("Node not found")
-			}
-		case 4:
-			navegate(t.root)
-		case 5:
-			stay = false
-		}
-	}
 }
