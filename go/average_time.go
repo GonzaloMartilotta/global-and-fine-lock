@@ -39,7 +39,6 @@ func randomNumbersArray(lenght int) []int {
 	return array
 }
 
-/*
 // Test sin hilos
 func (t *tree) noGoTestSearch(searchArray []int) time.Duration {
 	start := time.Now()
@@ -103,13 +102,9 @@ func averageTime(runs int, threads int, test func() time.Duration) {
 	times := []time.Duration{avTime, minTime, maxTime}
 	fmt.Println("Promedio con", threads, "hilos:", times)
 }
-*/
 
-func main() {
-	t := new(tree)
-
+func addTest(t *tree) {
 	listNumbers := randomNumbersArray(5000000)
-	searchArray := randomNumbersArray(500000)
 
 	testTime := time.Now()
 	t.fillTreeGo(4, listNumbers)
@@ -123,8 +118,12 @@ func main() {
 	fmt.Println(len(listNumbers), "elementos insertados en el arbol en", time.Since(testTime2))
 
 	fmt.Println("Arbol y array creados, empezando el test...")
+}
 
-	fmt.Println(len(searchArray))
+func main() {
+	t := new(tree)
+
+	menuTesting(t)
 
 	//averageTime(10, 0, func() time.Duration { return t.noGoTestSearch(searchArray) })
 	//averageTime(10, 1, func() time.Duration { return t.goTestSearch(1, searchArray) })
