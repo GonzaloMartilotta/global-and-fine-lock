@@ -87,10 +87,13 @@ func search(value int, root *Node) bool {
 	}
 }
 func (t *Tree) Search(value int) bool {
+	t.mu.Lock()
 	if t.root == nil {
+		t.mu.Unlock()
 		return false
 	}
 	t.root.mu.Lock()
+	t.mu.Unlock()
 	return search(value, t.root)
 }
 
