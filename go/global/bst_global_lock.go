@@ -40,9 +40,9 @@ func (t *Tree) Add(value int) {
 	t.root = add(value, t.root)
 }
 
-func search(value int, root *Node) *Node {
+func search(value int, root *Node) bool {
 	if root == nil {
-		return nil
+		return false
 	}
 
 	if value < root.Value {
@@ -50,11 +50,11 @@ func search(value int, root *Node) *Node {
 	} else if value > root.Value {
 		return search(value, root.Right)
 	} else {
-		return root
+		return true
 	}
 }
 
-func (t *Tree) Search(value int) *Node {
+func (t *Tree) Search(value int) bool {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 	return search(value, t.root)
