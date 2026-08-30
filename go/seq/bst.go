@@ -78,6 +78,10 @@ func (t *Tree) Delete(value int) {
 	t.root = delete(value, t.root)
 }
 
+func (t *Tree) Clear() {
+	t.root = nil
+}
+
 func findMin(root *Node) *Node {
 	for root.Left != nil {
 		root = root.Left
