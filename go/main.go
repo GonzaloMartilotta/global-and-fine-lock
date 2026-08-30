@@ -121,7 +121,7 @@ func seachTest(t BST, lenght int, workers int) {
 func main() {
 	arbol := new(fine.Tree)
 	workers := 1
-	treeLenght := 1000000
+	treeLenght := 2500000
 	searchLength := 500000
 
 	addTest(arbol, treeLenght, workers)
