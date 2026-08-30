@@ -1,14 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"sync"
 	"time"
 
 	"bst/avgtime"
 	"bst/fine"
-	//		"bst/global"
-	//	 "bst/seq"
+	//"bst/global"
+	//"bst/seq"
 )
 
 type BST interface {
@@ -86,25 +85,24 @@ func searchNumGo(t BST, workers int, searchArray []int) {
 }
 
 // Test de tiempo en add
+// PRE: si se usa seq, NO poner mas de 1 worker
 func addTest(t BST, lenght int, workers int) {
-	testTime := time.Now()
-	fillTreeGo(t, workers, lenght)
-	fmt.Println(lenght, "elementos insertados en el arbol en", time.Since(testTime))
-	fmt.Println()
-
-	t.Clear()
-
-	testTime2 := time.Now()
-	fillTree(t, lenght)
-	fmt.Println(lenght, "elementos insertados en el arbol en", time.Since(testTime2))
-
-	fmt.Println("Arbol y array creados, empezando el test...")
+	avgtime.AverageTime(workers, func() time.Duration {
+		t.Clear()
+		start := time.Now()
+		if workers == 1 {
+			fillTree(t, lenght)
+		} else {
+			fillTreeGo(t, workers, lenght)
+		}
+		return time.Since(start)
+	})
 }
 
 func main() {
 	arbol := new(fine.Tree)
-	workers := 4
-	lenght := 5000000
+	workers := 0
+	lenght := 500000
 
 	addTest(arbol, lenght, workers)
 }
