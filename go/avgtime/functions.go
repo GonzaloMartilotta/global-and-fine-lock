@@ -7,7 +7,8 @@ import (
 )
 
 // Crea un array con numeros aleatorios (pensados para ser insetados o buscados en el arbol)
-func RandomNumbersArray(lenght int, max int) []int {
+func RandomNumbersArray(lenght int) []int {
+	max := 5000000 // Rango de los numeros elegidos
 	array := make([]int, 0, lenght)
 	for range lenght {
 		array = append(array, rand.IntN(max))

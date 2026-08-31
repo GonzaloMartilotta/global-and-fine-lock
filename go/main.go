@@ -7,6 +7,8 @@ import (
 
 	"bst/avgtime"
 	"bst/fine"
+	"bst/global"
+	"bst/seq"
 	//"bst/global"
 	//"bst/seq"
 )
@@ -102,7 +104,7 @@ func addTest(t BST, lenght int, workers int) {
 }
 
 // PRE: El arbol tiene que tener elementos
-func seachTest(t BST, lenght int, workers int) {
+func searchTest(t BST, lenght int, workers int) {
 	fmt.Println("----------Test de busqueda----------")
 	avgtime.AverageTime(workers, func() time.Duration {
 		searchNumbers := avgtime.RandomNumbersArray(lenght)
@@ -119,11 +121,62 @@ func seachTest(t BST, lenght int, workers int) {
 }
 
 func main() {
-	arbol := new(fine.Tree)
+	var option int
+	var test int
+	running := true
+	var runningTwo bool
+
+	seqTree := new(seq.Tree)
+	globalTree := new(global.Tree)
+	fineTree := new(fine.Tree)
+
 	workers := 1
 	treeLenght := 2500000
 	searchLength := 500000
 
-	addTest(arbol, treeLenght, workers)
-	seachTest(arbol, searchLength, workers)
+	for running {
+		fmt.Println("----------Demo menu----------")
+		fmt.Println("1) Arbol binario de busqueda")
+		fmt.Println("2) Arbol con global locking")
+		fmt.Println("3) Arbol con fine locking")
+		fmt.Println("4) Salir")
+		fmt.Println("------------------------------------")
+		fmt.Scan(&option)
+
+		if option == 4 {
+			running = false
+		} else {
+			runningTwo = true
+			for runningTwo {
+				fmt.Println("------------------------------------")
+				fmt.Println("1) Add Test")
+				fmt.Println("2) Search Test")
+				fmt.Println("3) Salir")
+				fmt.Println("------------------------------------")
+				fmt.Scan(&test)
+				switch test {
+				case 1:
+					switch option {
+					case 1:
+						addTest(seqTree, treeLenght, workers)
+					case 2:
+						addTest(globalTree, treeLenght, workers)
+					case 3:
+						addTest(fineTree, treeLenght, workers)
+					}
+				case 2:
+					switch option {
+					case 1:
+						searchTest(seqTree, searchLength, workers)
+					case 2:
+						searchTest(globalTree, searchLength, workers)
+					case 3:
+						searchTest(fineTree, searchLength, workers)
+					}
+				case 3:
+					runningTwo = false
+				}
+			}
+		}
+	}
 }
