@@ -1,3 +1,6 @@
+// Arbol de busqueda binario normal, sin nada raro
+// SI SE LLAMA DESDE main.go CON MAS DE 1 WORKER GENERA RACE
+
 package seq
 
 import "fmt"

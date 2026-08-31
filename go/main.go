@@ -9,8 +9,6 @@ import (
 	"bst/fine"
 	"bst/global"
 	"bst/seq"
-	//"bst/global"
-	//"bst/seq"
 )
 
 type BST interface {
