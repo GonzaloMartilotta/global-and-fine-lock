@@ -8,20 +8,21 @@ import (
 
 // Crea un array con numeros aleatorios (pensados para ser insetados o buscados en el arbol)
 func RandomNumbersArray(lenght int) []int {
+	max := 5000000 // Rango de los numeros elegidos
 	array := make([]int, 0, lenght)
 	for range lenght {
-		array = append(array, rand.IntN(10000000))
+		array = append(array, rand.IntN(max))
 	}
 	return array
 }
 
 // Ejecuta n test y calcula su promedio (PARA TEMINAR)
-func AverageTime(threads int, test func() time.Duration) {
+func AverageTime(workers int, test func() time.Duration) {
 	var testTime time.Duration
 	var totalTime time.Duration
 	var minTime time.Duration
 	var maxTime time.Duration
-	runs := 15
+	runs := 15 // Veces que se ejecuta
 
 	for i := range runs {
 		testTime = test()
@@ -38,5 +39,5 @@ func AverageTime(threads int, test func() time.Duration) {
 	}
 	avTime := totalTime / time.Duration(runs)
 	times := []time.Duration{avTime, minTime, maxTime}
-	fmt.Println("Promedio con", threads, "hilos:", times)
+	fmt.Println("Promedio con", workers, "hilos:", times)
 }
