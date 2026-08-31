@@ -175,7 +175,6 @@ func main() {
 					}
 				case 3:
 					runningTwo = false
-					sadhg
 				}
 			}
 		}
